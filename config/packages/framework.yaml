@@ -16,6 +16,18 @@ framework:
     php_errors:
         log: true
 
+    http_client:
+      scoped_clients:
+        spotify.token.client:
+          base_uri: 'https://accounts.spotify.com/'
+          auth_basic: '%env(SPOTIFY_CLIENT_ID)%:%env(SPOTIFY_CLIENT_SECRET)%'
+          headers:
+            'User-Agent': 'Xoomify %env(APP_VERSION)%'
+        spotify.client:
+          base_uri: 'https://api.spotify.com/'
+          headers:
+            'User-Agent': 'Xoomify %env(APP_VERSION)%'
+
 when@test:
     framework:
         test: true
