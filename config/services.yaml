@@ -20,5 +20,26 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    JsonMapper\JsonMapperFactory: ~
+
+    JsonMapper\JsonMapper:
+      factory:
+        - '@JsonMapper\JsonMapperFactory'
+        - 'bestFit'
+
+    App\Service\SpotifyLoginService:
+      arguments:
+        $client_id: '%env(SPOTIFY_CLIENT_ID)%'
+        $redirect_uri: '%env(SPOTIFY_REDIRECT_URI)%'
+
+    App\Service\SpotifyTokenService:
+      arguments:
+        $client: '@spotify.token.client'
+        $redirect_uri: '%env(SPOTIFY_REDIRECT_URI)%'
+
+    App\Service\SpotifyService:
+      arguments:
+        $client: '@spotify.client'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
