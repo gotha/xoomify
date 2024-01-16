@@ -20,4 +20,15 @@ class UserRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, User::class);
     }
+
+    public static function createUser(string $id, string $name, string $email, string $type): User
+    {
+        $user = new User();
+        $user->setSpotifyUserId($id);
+        $user->setName($name);
+        $user->setEmail($email);
+        $user->setUserType($type);
+
+        return $user;
+    }
 }

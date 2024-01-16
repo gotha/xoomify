@@ -2,13 +2,14 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Service\SpotifyLoginService;
+use App\Service\SpotifyPersistedUserTokenService;
 use App\Service\SpotifyService;
 use App\Service\SpotifyTokenService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
@@ -28,23 +29,24 @@ class AuthController extends AbstractController
     public function index(
         #[MapQueryParameter] string $code,
         SpotifyTokenService $spotifyTokenService,
+        SpotifyPersistedUserTokenService $spotifyPersistedUserTokenService,
         SpotifyService $spotifyService,
         UserRepository $userRepository,
         EntityManagerInterface $em,
+        Security $security,
     ): Response {
         $userToken = $spotifyTokenService->getAccessTokenWithCode($code);
         $userProfile = $spotifyService->getCurrentUser($userToken->getAccessToken());
         $user = $userRepository->findOneBy(['spotifyUserId' => $userProfile->id]);
         if (!$user) {
-            // if user does not exist, lets create it
-            $user = new User();
-            $user->setSpotifyUserId($userProfile->id);
-            $user->setName($userProfile->display_name);
-            $user->setEmail($userProfile->email);
-            $user->setUserType($userProfile->product);
+            $user = UserRepository::createUser(
+                $userProfile->id,
+                $userProfile->display_name,
+                $userProfile->email,
+                $userProfile->product,
+            );
         }
-        // update access token
-        $user->setToken($userToken);
+        $user->setToken($user, $userToken);
         $em->persist($user);
         $em->flush();
 

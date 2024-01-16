@@ -134,4 +134,15 @@ class UserToken
 
         return $this;
     }
+
+    public function isExpired(): bool
+    {
+        $expiresAt = new \DateTime($this->dateCreated->format('Y-m-d H:i:s'), new \DateTimeZone('UTC'));
+        $expiresAt->add(new \DateInterval('PT'.$this->expiresIn.'S'));
+        if ($expiresAt >= new \DateTime()) {
+            return false;
+        }
+
+        return true;
+    }
 }
