@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Repository\UserPlayHistoryRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,8 +15,25 @@ class IndexController extends AbstractController
     public function index(
         #[CurrentUser] User $user,
     ): Response {
-        return $this->render('base.html.twig', [
+        return $this->render('index/index.html.twig', [
             'name' => $user->getName(),
+        ]);
+    }
+
+    #[Route('/history', name: 'app_history')]
+    public function history(
+        #[CurrentUser] User $user,
+        UserPlayHistoryRepository $userPlayHistoryRepository,
+    ): Response {
+        $history = $userPlayHistoryRepository->findBy([
+            'user' => $user,
+        ], [
+            'playedAt' => 'desc',
+        ], 50);
+
+        return $this->render('index/history.html.twig', [
+            'history' => $history,
+            'user' => $user,
         ]);
     }
 }
