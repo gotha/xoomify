@@ -14,6 +14,8 @@ class IndexController extends AbstractController
     public function index(
         #[CurrentUser] User $user,
     ): Response {
-        return new Response('Hello, '.$user->getName());
+        return $this->render('base.html.twig', [
+            'name' => $user->getName(),
+        ]);
     }
 }
