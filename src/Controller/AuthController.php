@@ -50,6 +50,8 @@ class AuthController extends AbstractController
         $em->persist($user);
         $em->flush();
 
-        return new Response('Hello '.$user->getName());
+        $security->login($user);
+
+        return $this->redirectToRoute('app_index');
     }
 }
