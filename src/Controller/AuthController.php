@@ -47,6 +47,8 @@ class AuthController extends AbstractController
 
         $spotifyPersistedUserTokenService->setToken($user, $userToken);
 
-        return new Response('Hello '.$user->getName());
+        $security->login($user);
+
+        return $this->redirectToRoute('app_index');
     }
 }
