@@ -1,60 +1,53 @@
 {% extends 'base.html.twig' %}
-
 {% block content %}
-
-<div class="tab-group">
-  <a href="/charts/songs/{{ period }}" class="tab-item active">
-    Top Songs
-  </a>
-  <a href="/charts/artists/{{ period }}" class="tab-item">
-    Top Artists
-  </a>
-</div>
-
+    <div class="tab-group">
+        <a href="/charts/songs/{{ period }}" class="tab-item active">Top Songs</a>
+        <a href="/charts/artists/{{ period }}" class="tab-item">Top Artists</a>
+    </div>
     <ul class="list-group">
         {% for i in chart.items %}
-        <li class="list-group-item">
-            {% if i.track.artists %}
-                {% set firstArtist = i.track.artists|first %}
-                <img class="img-circle media-object pull-left" src="#" width="48" height="48">
-            {% endif %}
-
-            <div class="media-body" style="float: left">
-                <strong title="Track name">{{ i.track.name }}</strong>
-                <p title="Artists">
-                    {% for a in i.track.artists %}
-                        {{ a.name }}{% if i.track.artists|length > 0 and loop.last == false%},{% endif %}
-                    {% endfor %}
-                </p>
-            </div>
-            <div style="float: right;">
-                {{ i.numPlays }}
-                <a href="https://open.spotify.com/track/{{ i.track.spotifyId }}" target="_blank" style=" color: black">
-                    <span class="icon icon-play"></span>
-                </a>
-            </div>
-        </li>
+            <li class="list-group-item">
+                {% if i.track.artists %}
+                    {% set firstArtist = i.track.artists|first %}
+                    <img class="img-circle media-object pull-left"
+                         src="#"
+                         width="48"
+                         height="48">
+                {% endif %}
+                <div class="media-body" style="float: left">
+                    <strong title="Track name">{{ i.track.name }}</strong>
+                    <p title="Artists">
+                        {% for a in i.track.artists %}
+                            {{ a.name }}
+                            {% if i.track.artists|length > 0 and loop.last == false %},{% endif %}
+                        {% endfor %}
+                    </p>
+                </div>
+                <div style="float: right;">
+                    {{ i.numPlays }}
+                    <a href="https://open.spotify.com/track/{{ i.track.spotifyId }}"
+                       target="_blank"
+                       style="color: black">
+                        <span class="icon icon-play"></span>
+                    </a>
+                </div>
+            </li>
         {% endfor %}
     </ul>
-
-
 {% endblock %}
-
-{% block toolbar %} 
-<div style="text-align: center">
-    <div class="btn-group">
-      <a href="/charts/songs/day" class="btn btn-default btn-large {% if period == "day" %} active {% endif %}">
-        today
-      </a>
-      <a href="/charts/songs/week" class="btn btn-default btn-large {% if period == "week" %} active {% endif %}">
-        week
-      </button>
-      <a href="/charts/songs/month" class="btn btn-default btn-large {% if period == "month" %} active {% endif %}">
-        month
-      </a>
-      <a href="/charts/songs/year" class="btn btn-default btn-large {% if period == "year" %} active {% endif %}">
-        year
-      </a>
+{% block toolbar %}
+    <div style="text-align: center">
+        <div class="btn-group">
+            <a href="/charts/songs/day"
+               class="btn btn-default btn-large {% if period == "day" %}active{% endif %}">today</a>
+            <a href="/charts/songs/week"
+               class="btn btn-default btn-large {% if period == "week" %}active{% endif %}">
+                week
+            </button>
+            <a href="/charts/songs/month"
+               class="btn btn-default btn-large {% if period == "month" %}active{% endif %}">month</a>
+            <a href="/charts/songs/year"
+               class="btn btn-default btn-large {% if period == "year" %}active{% endif %}">year</a>
+        </div>
     </div>
-</div>
-{% endblock  %}
+{% endblock %}

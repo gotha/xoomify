@@ -1,32 +1,31 @@
 {% extends 'base.html.twig' %}
-
 {% block content %}
-
-    <h3 style="margin-left: 10px;"> {{ user.name }}'s play history </h3>
+    <h3 style="margin-left: 10px;">{{ user.name }}'s play history</h3>
     <ul class="list-group">
         {% for i in history %}
-        <li class="list-group-item">
-            {% if i.track.artists %}
-                {% set firstArtist = i.track.artists|first %}
-                <img class="img-circle media-object pull-left" src="#" width="48" height="48">
-            {% endif %}
-
-            <div class="media-body" style="float: left">
-                <strong title="Track name">{{ i.track.name }}</strong>
-                <p title="Artists">
-                    {% for a in i.track.artists %}
-                        {{ a.name }}{% if i.track.artists|length > 0 and loop.last == false%},{% endif %}
-                    {% endfor %}
-                </p>
-            </div>
-            <div style="float: right;">
-                {{ i.playedAt|date("H:i") }} h.
-                <a href="https://open.spotify.com/track/{{ i.track.spotifyId }}" target="_blank" style=" color: black">
-                    <span class="icon icon-play"></span>
-                </a>
-            </div>
-        </li>
+            <li class="list-group-item">
+                {% if i.track.artists %}
+                    {% set firstArtist = i.track.artists|first %}
+                    <img class="img-circle media-object pull-left"
+                         src="#"
+                         width="48"
+                         height="48">
+                {% endif %}
+                <div class="media-body" style="float: left">
+                    <strong title="Track name">{{ i.track.name }}</strong>
+                    <p title="Artists">
+                        {% for a in i.track.artists %}
+                            {{ a.name }}
+                            {% if i.track.artists|length > 0 and loop.last == false %},{% endif %}
+                        {% endfor %}
+                    </p>
+                </div>
+                <div style="float: right;">
+                    {{ i.playedAt|date("H:i") }} h. <a href="https://open.spotify.com/track/{{ i.track.spotifyId }}"
+    target="_blank"
+    style="color: black"> <span class="icon icon-play"></span> </a>
+                </div>
+            </li>
         {% endfor %}
     </ul>
-
 {% endblock %}

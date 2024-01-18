@@ -1,55 +1,49 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  {% block stylesheets %}
-    {{ encore_entry_link_tags('app') }}
-  {% endblock %}
-</head>
-<body>
-
-    <div class="window">
-        <header class="toolbar toolbar-header">
-            <h1 class="title">
-                {% set currentPath = path(app.request.attributes.get('_route')) %}
-                {{ title|default("Xoomify") }}
-            </h1>
-	    <div class="toolbar-actions">{% block toolbar %}{% endblock %}</div>
-        </header>
-        <div class="window-content">
-
-
-            <div class="pane-group">
-                <div class="pane pane-sm sidebar">
-                    <h5 class="nav-group-title">Favorites</h5>
-                    <nav class="nav-group">
-                        <a href="/" class="sidebarLink nav-group-item {% if currentPath == "/" %}active {% endif %}">
-                            <span class="icon icon-home"></span>
-                            Home
-                        </a>
-                        <a href="/most_played/week" class="sidebarLink nav-group-item {% if currentPath == "/most_played" %}active {% endif %}">
-                            <span class="icon icon-note-beamed"></span>
-                            My Top 20
-                        </a>
-                        <a href="/history" class="sidebarLink nav-group-item {% if currentPath == "/history" %}active {% endif %}">
-                            <span class="icon icon-hourglass"></span>
-                            History
-                        </a>
-                        <a href="/users" class="sidebarLink nav-group-item {% if currentPath == "/users" %}active {% endif %}">
-                            <span class="icon icon-users"></span>
-                            Users
-                        </a>
-                    </nav>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% block stylesheets %}{{ encore_entry_link_tags("app") }}{% endblock %}
+    </head>
+    <body>
+        <div class="window">
+            <header class="toolbar toolbar-header">
+                <h1 class="title">
+                    {% set currentPath = path(app.request.attributes.get('_route')) %}
+                    {{ title|default("Xoomify") }}
+                </h1>
+                <div class="toolbar-actions">
+                    {% block toolbar %}{% endblock %}
                 </div>
-
-		<div class="pane">
-
-		    {% block content %}{% endblock %}
-		</div>
-
+            </header>
+            <div class="window-content">
+                <div class="pane-group">
+                    <div class="pane pane-sm sidebar">
+                        <h5 class="nav-group-title">Favorites</h5>
+                        <nav class="nav-group">
+                            <a href="/" class="sidebarLink nav-group-item {% if currentPath == "/" %}active{% endif %}">
+                                <span class="icon icon-home"></span>
+                                Home
+                            </a>
+                            <a href="/most_played/week" class="sidebarLink nav-group-item {% if currentPath == "/most_played" %}active{% endif %}">
+                                <span class="icon icon-note-beamed"></span>
+                                My Top 20
+                            </a>
+                            <a href="/history" class="sidebarLink nav-group-item {% if currentPath == "/history" %}active{% endif %}">
+                                <span class="icon icon-hourglass"></span>
+                                History
+                            </a>
+                            <a href="/users" class="sidebarLink nav-group-item {% if currentPath == "/users" %}active{% endif %}">
+                                <span class="icon icon-users"></span>
+                                Users
+                            </a>
+                        </nav>
+                    </div>
+                    <div class="pane">
+                        {% block content %}{% endblock %}
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</body>
+    </body>
 </html>
