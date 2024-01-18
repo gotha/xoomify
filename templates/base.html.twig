@@ -8,18 +8,21 @@
   {% endblock %}
 </head>
 <body>
+
     <div class="window">
         <header class="toolbar toolbar-header">
             <h1 class="title">
                 {% set currentPath = path(app.request.attributes.get('_route')) %}
                 {{ title|default("Xoomify") }}
             </h1>
+	    <div class="toolbar-actions">{% block toolbar %}{% endblock %}</div>
         </header>
         <div class="window-content">
 
+
             <div class="pane-group">
                 <div class="pane pane-sm sidebar">
-
+                    <h5 class="nav-group-title">Favorites</h5>
                     <nav class="nav-group">
                         <a href="/" class="sidebarLink nav-group-item {% if currentPath == "/" %}active {% endif %}">
                             <span class="icon icon-home"></span>
@@ -41,6 +44,7 @@
                 </div>
 
 		<div class="pane">
+
 		    {% block content %}{% endblock %}
 		</div>
 
