@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+{% block content %}
+    <div class="tab-group">
+        <a href="/charts/artists/{{ period }}" class="tab-item">Top Songs</a>
+        <a href="/charts/artists/{{ period }}" class="tab-item active">Top Artists</a>
+    </div>
+    <ul class="list-group">
+        {% for i in chart.items %}
+            <li class="list-group-item">
+                <img class="img-circle media-object pull-left"
+                     src="#"
+                     width="48"
+                     height="48">
+                <div class="media-body" style="float: left">
+                    <strong title="{{ i.artist.name }}">{{ i.artist.name }}</strong>
+                </div>
+                <div style="float: right;">
+                    {{ i.numPlays }} plays
+                    <a href="https://open.spotify.com/artist/{{ i.artist.spotifyId }}"
+                       target="_blank"
+                       style="color: black">
+                        <span class="icon icon-play"></span>
+                    </a>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+{% block toolbar %}
+    <div style="text-align: center">
+        <div class="btn-group">
+            <a href="/charts/artists/day"
+               class="btn btn-default btn-large {% if period == "day" %}active{% endif %}">today</a>
+            <a href="/charts/artists/week"
+               class="btn btn-default btn-large {% if period == "week" %}active{% endif %}">
+                week
+            </button>
+            <a href="/charts/artists/month"
+               class="btn btn-default btn-large {% if period == "month" %}active{% endif %}">month</a>
+            <a href="/charts/artists/year"
+               class="btn btn-default btn-large {% if period == "year" %}active{% endif %}">year</a>
+        </div>
+    </div>
+{% endblock %}

@@ -23,6 +23,21 @@ class ChartsController extends AbstractController
             'chart' => $tracksChart,
         ]);
     }
+
+    #[Route('/charts/artists/{period}', defaults: ['period' => 'week'], name: 'app_artists_chart')]
+    public function artistsCharts(
+        ChartsService $chartsService,
+        ChartPeriod $period = ChartPeriod::Week,
+    ): Response {
+        list($startDate, $endDate) = $period->getDates();
+
+        $chart = $chartsService->getMostListenedArtists($startDate, $endDate);
+
+        return $this->render('charts/artists.html.twig', [
+            'period' => $period->value,
+            'chart' => $chart,
+        ]);
+    }
 }
 
 enum ChartPeriod: string
