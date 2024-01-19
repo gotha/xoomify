@@ -2,38 +2,70 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use App\Repository\UserRepository;
 use App\Service\ChartsService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class ChartsController extends AbstractController
 {
-    #[Route('/charts/songs/{period}', defaults: ['period' => 'week'], name: 'app_song_chart')]
+    #[Route('/charts/songs/{period}/{user_uri}', defaults: ['period' => 'week'], name: 'app_song_chart')]
     public function charts(
+        #[CurrentUser] User $currentUser,
+        UserRepository $userRepository,
         ChartsService $chartsService,
         ChartPeriod $period = ChartPeriod::Week,
+        string $user_uri = null,
     ): Response {
         list($startDate, $endDate) = $period->getDates();
 
-        $tracksChart = $chartsService->getMostListenedTracks($startDate, $endDate);
+        $user = null;
+        if ($user_uri) {
+            $user = ('me' == $user_uri)
+                ? $currentUser
+                : $userRepository->findOneBy(['id' => (int) $user_uri]);
+            if (!$user) {
+                throw new NotFoundHttpException('unable to find user');
+            }
+        }
+
+        $tracksChart = $chartsService->getMostListenedTracks($startDate, $endDate, $user);
 
         return $this->render('charts/songs.html.twig', [
+            'user' => $user,
             'period' => $period->value,
             'chart' => $tracksChart,
         ]);
     }
 
-    #[Route('/charts/artists/{period}', defaults: ['period' => 'week'], name: 'app_artists_chart')]
+    #[Route('/charts/artists/{period}/{user_uri}', defaults: ['period' => 'week'], name: 'app_artists_chart')]
     public function artistsCharts(
+        #[CurrentUser] User $currentUser,
+        UserRepository $userRepository,
         ChartsService $chartsService,
         ChartPeriod $period = ChartPeriod::Week,
+        string $user_uri = null,
     ): Response {
         list($startDate, $endDate) = $period->getDates();
 
-        $chart = $chartsService->getMostListenedArtists($startDate, $endDate);
+        $user = null;
+        if ($user_uri) {
+            $user = ('me' == $user_uri)
+                ? $currentUser
+                : $userRepository->findOneBy(['id' => (int) $user_uri]);
+            if (!$user) {
+                throw new NotFoundHttpException('unable to find user');
+            }
+        }
+
+        $chart = $chartsService->getMostListenedArtists($startDate, $endDate, $user);
 
         return $this->render('charts/artists.html.twig', [
+            'user' => $user,
             'period' => $period->value,
             'chart' => $chart,
         ]);
