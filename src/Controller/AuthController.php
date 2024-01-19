@@ -5,8 +5,8 @@ namespace App\Controller;
 use App\Repository\UserRepository;
 use App\Service\SpotifyLoginService;
 use App\Service\SpotifyPersistedUserTokenService;
-use App\Service\SpotifyService;
 use App\Service\SpotifyTokenService;
+use App\Service\SpotifyUserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -30,13 +30,13 @@ class AuthController extends AbstractController
         #[MapQueryParameter] string $code,
         SpotifyTokenService $spotifyTokenService,
         SpotifyPersistedUserTokenService $spotifyPersistedUserTokenService,
-        SpotifyService $spotifyService,
+        SpotifyUserService $spotifyUserService,
         UserRepository $userRepository,
         EntityManagerInterface $em,
         Security $security,
     ): Response {
         $userToken = $spotifyTokenService->getAccessTokenWithCode($code);
-        $userProfile = $spotifyService->getCurrentUser($userToken->getAccessToken());
+        $userProfile = $spotifyUserService->getCurrentUser($userToken->getAccessToken());
         $user = $userRepository->findOneBy(['spotifyUserId' => $userProfile->id]);
         if (!$user) {
             $user = UserRepository::createUser(

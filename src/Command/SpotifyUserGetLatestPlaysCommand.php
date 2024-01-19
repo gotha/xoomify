@@ -12,8 +12,8 @@ use App\Repository\TrackRepository;
 use App\Repository\UserPlayHistoryRepository;
 use App\Repository\UserRepository;
 use App\Service\SpotifyPersistedUserTokenService;
-use App\Service\SpotifyService;
 use App\Service\SpotifyTokenService;
+use App\Service\SpotifyUserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -36,7 +36,7 @@ class SpotifyUserGetLatestPlaysCommand extends Command
         private TrackRepository $trackRepository,
         private UserPlayHistoryRepository $userPlayHistoryRepository,
         private EntityManagerInterface $em,
-        private SpotifyService $spotify,
+        private SpotifyUserService $spotifyUserService,
         private SpotifyTokenService $spotifyTokenService,
         private SpotifyPersistedUserTokenService $spotifyPersistedUserTokenService,
         private EventDispatcherInterface $eventDispatcher,
@@ -89,7 +89,7 @@ class SpotifyUserGetLatestPlaysCommand extends Command
 
         do {
             $io->info(sprintf('fetching user play history since: %s', date('Y-m-d H:i:s', $afterTimestamp / 1000)));
-            $history = $this->spotify->getRecentlyPlayedSongs($accessToken, $afterTimestamp);
+            $history = $this->spotifyUserService->getRecentlyPlayedSongs($accessToken, $afterTimestamp);
             $io->info(sprintf('%s items found', count($history->items)));
 
             $artists = $history->getArtists();
