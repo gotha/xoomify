@@ -37,9 +37,6 @@ class ChartsService
 			GROUP BY uph.track
 			ORDER BY num DESC
 		';
-        if ($user) {
-            $dql .= 'AND uph.user = :user';
-        }
 
         $query = $this->em->createQuery($dql)
                     ->setMaxResults($limit)
