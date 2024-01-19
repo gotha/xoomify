@@ -39,6 +39,7 @@ class ChartsController extends AbstractController
             'user' => $user,
             'period' => $period->value,
             'chart' => $tracksChart,
+            'title' => ($user) ? $user->getName().'\'s charts ' : null,
         ]);
     }
 
@@ -68,6 +69,7 @@ class ChartsController extends AbstractController
             'user' => $user,
             'period' => $period->value,
             'chart' => $chart,
+            'title' => ($user) ? $user->getName().'\'s charts ' : null,
         ]);
     }
 }
