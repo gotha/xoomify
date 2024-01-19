@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% block content %}
     <div class="tab-group">
-        <a href="/charts/artists/{{ period }}/{{ user.id|default }}" class="tab-item">Top Songs</a>
+        <a href="/charts/songs/{{ period }}/{{ user.id|default }}" class="tab-item">Top Songs</a>
         <a href="/charts/artists/{{ period }}/{{ user.id|default }}" class="tab-item active">Top Artists</a>
     </div>
     <ul class="list-group">
