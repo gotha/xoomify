@@ -17,6 +17,7 @@ class UsersController extends AbstractController
 
         return $this->render('users/index.html.twig', [
             'users' => $users,
+            'page' => 'users',
         ]);
     }
 }
