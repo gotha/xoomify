@@ -6,7 +6,7 @@
                 {% if i.track.artists %}
                     {% set firstArtist = i.track.artists|first %}
                     <img class="img-circle media-object pull-left"
-                         src="#"
+			 src="{{ firstArtist.smallestImage.url }}"
                          width="48"
                          height="48">
                 {% endif %}
