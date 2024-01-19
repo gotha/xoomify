@@ -34,12 +34,17 @@ services:
 
     App\Service\SpotifyTokenService:
       arguments:
-        $client: '@spotify.token.client'
+        $client: '@spotify.auth.client'
         $redirect_uri: '%env(SPOTIFY_REDIRECT_URI)%'
+
+    App\Service\SpotifyService:
+      arguments:
+        $client: '@spotify.client'
 
     App\Service\SpotifyUserService:
       arguments:
         $client: '@spotify.client'
+
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

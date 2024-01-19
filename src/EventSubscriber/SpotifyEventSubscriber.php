@@ -9,6 +9,7 @@ use App\Event\TrackPlayedEvent;
 use App\Repository\ArtistRepository;
 use App\Repository\TrackRepository;
 use App\Repository\UserPlayHistoryRepository;
+use App\Service\ArtistsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -19,18 +20,13 @@ class SpotifyEventSubscriber implements EventSubscriberInterface
         protected TrackRepository $trackRepository,
         protected UserPlayHistoryRepository $userPlayHistoryRepository,
         protected EntityManagerInterface $em,
+        protected ArtistsService $artistsService,
     ) {
     }
 
     public function onArtistFound(ArtistFoundEvent $e): void
     {
-        $artist = $e->getArtist();
-        $existingArtist = $this->artistRepository->findOneBy(['spotifyId' => $artist->getSpotifyId()]);
-        if ($existingArtist) {
-            return;
-        }
-        $this->em->persist($artist);
-        $this->em->flush();
+        $this->artistsService->updateArtistInfo($e->getArtist()->getSpotifyId());
     }
 
     public function onTrackFound(TrackFoundEvent $e): void

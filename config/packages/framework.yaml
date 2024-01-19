@@ -18,12 +18,17 @@ framework:
 
     http_client:
       scoped_clients:
-        spotify.token.client:
+        spotify.auth.client:
           base_uri: 'https://accounts.spotify.com/'
           auth_basic: '%env(SPOTIFY_CLIENT_ID)%:%env(SPOTIFY_CLIENT_SECRET)%'
           headers:
             'User-Agent': 'Xoomify %env(APP_VERSION)%'
         spotify.client:
+          retry_failed:
+            http_codes: [ 429 ]
+            max_retries: 3
+            delay: 1000
+            multiplier: 3
           base_uri: 'https://api.spotify.com/'
           headers:
             'User-Agent': 'Xoomify %env(APP_VERSION)%'
