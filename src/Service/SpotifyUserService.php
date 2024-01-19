@@ -8,7 +8,7 @@ use JsonMapper\JsonMapper;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class SpotifyService
+class SpotifyUserService
 {
     public function __construct(
         private HttpClientInterface $client,
