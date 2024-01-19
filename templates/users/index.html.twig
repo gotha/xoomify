@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+<div class="pane">
+    <ul class="list-group">
+        {% for u in users %}
+            <li class="list-group-item">
+                <img class="img-circle media-object pull-left" src="#" width="64" height="64">
+
+                <div class="media-body" style="float: left">
+                    <a href="/charts/songs/week/{{ u.id }}">
+		        <strong>{{ u.name }}</strong>
+		    </a>
+                </div>
+                <div style="float: right;">
+                    <a href="/charts/songs/week/{{ u.id }}" style="margin: 10px;">
+                        <span class="icon icon-user"></span>
+                    </a>
+                    <a href="https://open.spotify.com/user/{{ u.spotifyUserId }}" target="_blank" style=" color: black">
+                        <span class="icon icon-export"></span>
+                    </a>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
