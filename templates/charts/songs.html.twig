@@ -1,8 +1,8 @@
 {% extends 'base.html.twig' %}
 {% block content %}
     <div class="tab-group">
-        <a href="/charts/songs/{{ period }}" class="tab-item active">Top Songs</a>
-        <a href="/charts/artists/{{ period }}" class="tab-item">Top Artists</a>
+	<a href="/charts/songs/{{ period }}/{{ user.id|default }}" class="tab-item active">Top Songs</a>
+	<a href="/charts/artists/{{ period }}/{{ user.id|default }}" class="tab-item">Top Artists</a>
     </div>
     <ul class="list-group">
         {% for i in chart.items %}
@@ -38,16 +38,22 @@
 {% block toolbar %}
     <div style="text-align: center">
         <div class="btn-group">
-            <a href="/charts/songs/day"
-               class="btn btn-default btn-large {% if period == "day" %}active{% endif %}">today</a>
-            <a href="/charts/songs/week"
+            <a href="/charts/songs/day/{{ user.id|default }}"
+               class="btn btn-default btn-large {% if period == "day" %}active{% endif %}">
+		today
+	    </a>
+            <a href="/charts/songs/week/{{ user.id|default }}"
                class="btn btn-default btn-large {% if period == "week" %}active{% endif %}">
                 week
             </button>
-            <a href="/charts/songs/month"
-               class="btn btn-default btn-large {% if period == "month" %}active{% endif %}">month</a>
-            <a href="/charts/songs/year"
-               class="btn btn-default btn-large {% if period == "year" %}active{% endif %}">year</a>
+            <a href="/charts/songs/month/{{ user.id|default }}"
+               class="btn btn-default btn-large {% if period == "month" %}active{% endif %}">
+		month
+	    </a>
+            <a href="/charts/songs/year/{{ user.id|default }}"
+               class="btn btn-default btn-large {% if period == "year" %}active{% endif %}">
+		year
+	    </a>
         </div>
     </div>
 {% endblock %}
