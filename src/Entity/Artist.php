@@ -24,7 +24,7 @@ class Artist
     #[ORM\ManyToMany(targetEntity: Track::class, mappedBy: 'artist')]
     private Collection $tracks;
 
-    #[ORM\OneToMany(mappedBy: 'Artist', targetEntity: ArtistImage::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'artist', targetEntity: ArtistImage::class, orphanRemoval: true)]
     private Collection $artistImages;
 
     public function __construct()
@@ -87,6 +87,25 @@ class Artist
         }
 
         return $this;
+    }
+
+    public function getSmallestImage(): ArtistImage|null
+    {
+        $images = $this->getArtistImages()->getValues();
+        $min = array_shift($images);
+        foreach ($images as $img) {
+            if (null == $min) {
+                $min = $img;
+                continue;
+            }
+            $minRatio = $min->getWidth() * $min->getHeight();
+            $imgRatio = $img->getWidth() * $img->getHeight();
+            if ($imgRatio < $minRatio) {
+                $min = $img;
+            }
+        }
+
+        return $min;
     }
 
     /**

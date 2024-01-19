@@ -58,7 +58,7 @@ class Track
     public int $duration_ms;
     public bool $explicit;
     public ExternalIds $external_ids;
-    public ExternalUrls $external_urls;
+    public ExternalUrl $external_urls;
     public string $href;
     public string $id;
     public bool $is_local;
@@ -77,10 +77,10 @@ class Album
     public array $artists;
     /** @var string[] */
     public array $available_markets;
-    public ExternalUrls $external_urls;
+    public ExternalUrl $external_urls;
     public string $href;
     public string $id;
-    /** @var Images[] */
+    /** @var Image[] */
     public array $images;
     public string $name;
     public string $release_date;
@@ -92,24 +92,12 @@ class Album
 
 class Artists
 {
-    public ExternalUrls $external_urls;
+    public ExternalUrl $external_urls;
     public string $href;
     public string $id;
     public string $name;
     public string $type;
     public string $uri;
-}
-
-class ExternalUrls
-{
-    public string $spotify;
-}
-
-class Images
-{
-    public int $height;
-    public string $url;
-    public int $width;
 }
 
 class ExternalIds
@@ -121,7 +109,7 @@ class Context
 {
     public string $type;
     public string $href;
-    public ExternalUrls $external_urls;
+    public ExternalUrl $external_urls;
     public string $uri;
 }
 

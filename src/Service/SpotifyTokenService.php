@@ -95,4 +95,32 @@ class SpotifyTokenService
 
         return self::createUserTokenFromObject($data);
     }
+
+    public function getClientToken(): string
+    {
+        $resp = $this->client->request('POST', '/api/token/', [
+            'body' => http_build_query([
+                'grant_type' => 'client_credentials',
+            ]),
+        ]);
+
+        $content = '';
+        try {
+            $content = $resp->getContent();
+        } catch (\Exception $e) {
+            $this->logger->error('could not get user access token with code', [
+                'debug' => $resp->getInfo()['debug'],
+            ]);
+            throw new \Exception($e);
+        }
+        $data = @json_decode($content);
+        if (!isset($data->access_token)) {
+            $this->logger->error('could not fetch client token', [
+                'content' => $content,
+            ]);
+            throw new \Exception('could not fetch client token:'.$content);
+        }
+
+        return $data->access_token;
+    }
 }

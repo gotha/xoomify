@@ -7,11 +7,11 @@
     <ul class="list-group">
         {% for i in chart.items %}
             <li class="list-group-item">
+                <div class="media-body" style="float: left">
                 <img class="img-circle media-object pull-left"
-                     src="#"
+		     src="{{ i.artist.smallestImage.url }}"
                      width="48"
                      height="48">
-                <div class="media-body" style="float: left">
                     <strong title="{{ i.artist.name }}">{{ i.artist.name }}</strong>
                 </div>
                 <div style="float: right;">
