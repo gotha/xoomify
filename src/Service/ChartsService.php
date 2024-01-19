@@ -31,6 +31,7 @@ class ChartsService
         $dql = '
 			SELECT uph as item, COUNT(uph.id) as num
 			FROM App\Entity\UserPlayHistory uph
+			JOIN uph.track as t
 			WHERE uph.playedAt >= :startDate
 			AND uph.playedAt <= :endDate
 			'.$userFilter.'
