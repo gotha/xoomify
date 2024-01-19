@@ -24,9 +24,13 @@ class Artist
     #[ORM\ManyToMany(targetEntity: Track::class, mappedBy: 'artist')]
     private Collection $tracks;
 
+    #[ORM\OneToMany(mappedBy: 'Artist', targetEntity: ArtistImage::class, orphanRemoval: true)]
+    private Collection $artistImages;
+
     public function __construct()
     {
         $this->tracks = new ArrayCollection();
+        $this->artistImages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -80,6 +84,36 @@ class Artist
     {
         if ($this->tracks->removeElement($track)) {
             $track->removeArtist($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ArtistImage>
+     */
+    public function getArtistImages(): Collection
+    {
+        return $this->artistImages;
+    }
+
+    public function addArtistImage(ArtistImage $artistImage): static
+    {
+        if (!$this->artistImages->contains($artistImage)) {
+            $this->artistImages->add($artistImage);
+            $artistImage->setArtist($this);
+        }
+
+        return $this;
+    }
+
+    public function removeArtistImage(ArtistImage $artistImage): static
+    {
+        if ($this->artistImages->removeElement($artistImage)) {
+            // set the owning side to null (unless already changed)
+            if ($artistImage->getArtist() === $this) {
+                $artistImage->setArtist(null);
+            }
         }
 
         return $this;
