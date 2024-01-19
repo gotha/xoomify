@@ -28,6 +28,7 @@ class HistoryController extends AbstractController
             'history' => $history,
             'user' => $user,
             'title' => $user->getName()."'s play history",
+            'page' => 'history',
         ]);
     }
 
@@ -51,6 +52,7 @@ class HistoryController extends AbstractController
             'history' => $history,
             'user' => $user,
             'title' => $user->getName()."'s play history",
+            'page' => 'history',
         ]);
     }
 }
