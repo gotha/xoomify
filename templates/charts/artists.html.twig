@@ -9,7 +9,7 @@
             <li class="list-group-item">
                 <div class="media-body" style="float: left">
                 <img class="img-circle media-object pull-left"
-		     src="{{ i.artist.smallestImage.url }}"
+		     src="{{ i.artist.smallestImage.url| default("#")}}"
                      width="48"
                      height="48">
                     <strong title="{{ i.artist.name }}">{{ i.artist.name }}</strong>
