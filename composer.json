@@ -73,6 +73,9 @@
         "symfony": {
             "allow-contrib": false,
             "require": "7.0.*"
+        },
+        "runtime": {
+          "disable_dotenv": false
         }
     }
 }
