@@ -4,6 +4,8 @@ namespace App\Service;
 
 use App\Entity\UserToken;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class SpotifyTokenService
@@ -98,29 +100,37 @@ class SpotifyTokenService
 
     public function getClientToken(): string
     {
-        $resp = $this->client->request('POST', '/api/token/', [
-            'body' => http_build_query([
-                'grant_type' => 'client_credentials',
-            ]),
-        ]);
-
-        $content = '';
-        try {
-            $content = $resp->getContent();
-        } catch (\Exception $e) {
-            $this->logger->error('could not get user access token with code', [
-                'debug' => $resp->getInfo()['debug'],
+        $cache = new FilesystemAdapter();
+        $accessToken = $cache->get('spotify_client_access_token', function (ItemInterface $item) {
+            $resp = $this->client->request('POST', '/api/token/', [
+                'body' => http_build_query([
+                    'grant_type' => 'client_credentials',
+                ]),
             ]);
-            throw new \Exception($e);
-        }
-        $data = @json_decode($content);
-        if (!isset($data->access_token)) {
-            $this->logger->error('could not fetch client token', [
-                'content' => $content,
-            ]);
-            throw new \Exception('could not fetch client token:'.$content);
-        }
 
-        return $data->access_token;
+            $content = '';
+            try {
+                $content = $resp->getContent();
+            } catch (\Exception $e) {
+                $this->logger->error('could not get user access token with code', [
+                    'debug' => $resp->getInfo()['debug'],
+                ]);
+                throw new \Exception($e);
+            }
+            $data = @json_decode($content);
+            if (!isset($data->access_token)) {
+                $this->logger->error('could not fetch client token', [
+                    'content' => $content,
+                ]);
+                throw new \Exception('could not fetch client token:'.$content);
+            }
+
+            $expres_in = isset($data->expires_in) ? (int) $data->expires_in : 60;
+            $item->expiresAfter($expres_in);
+
+            return $data->access_token;
+        });
+
+        return $accessToken;
     }
 }
