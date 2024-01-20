@@ -4,3 +4,17 @@
 body {
     background-color: lightgray;
 }
+
+.toolbar-menu {
+  display: none;
+}
+
+@media screen and (max-width: 600px) {
+  .pane.sidebar {
+    display: none;
+  }
+
+  .toolbar-menu {
+    display: block;
+  }
+}

@@ -11,9 +11,31 @@
                 <h1 class="title">
                     {{ title|default("Xoomify") }}
                 </h1>
+		<div class="toolbar-actions toolbar-menu">
+		<ul class="tab-group">
+		    <a href="/" class="tab-item {% if page == "home" %}active{% endif %}">
+			<span class="icon icon-home"></span>
+			Home
+		    </a>
+		    <a href="/charts/songs/week/me" class="tab-item {% if page == "me" %}active{% endif %}">
+			<span class="icon icon-note-beamed"></span>
+			My Top 20
+		    </a>
+		    <a href="/history" class="tab-item {% if page == "history" %}active{% endif %}">
+			<span class="icon icon-hourglass"></span>
+			History
+		    </a>
+		    <a href="/users" class="tab-item {% if page == "users" %}active{% endif %}">
+			<span class="icon icon-users"></span>
+			Users
+		    </a>
+		</ul>
+		</div>
+		{% if block('toolbar') %}
                 <div class="toolbar-actions">
                     {% block toolbar %}{% endblock %}
                 </div>
+	        {% endif %}
             </header>
             <div class="window-content">
                 <div class="pane-group">
