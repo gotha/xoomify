@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    image: local/xoomify:latest
+    ports:
+      - "8000:80"
+    environment:
+      APP_SECRET: ${APP_SECRET}
+      APP_ENV: ${APP_ENV:-prod}
+      APP_DEBUG: ${APP_DEBUG:-0}
+      APP_VERSION: ${APP_VERSION:-0.0.1-rc1}
+      SPOTIFY_CLIENT_ID: ${SPOTIFY_CLIENT_ID}
+      SPOTIFY_CLIENT_SECRET: ${SPOTIFY_CLIENT_SECRET}
+      SPOTIFY_REDIRECT_URI: ${SPOTIFY_REDIRECT_URI}
+      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?serverVersion=15&charset=utf8"
+    depends_on:
+      - db
+    restart: always
+
+  db:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data:rw
+    restart: always
+

@@ -48,7 +48,7 @@ RUN apt-get update \
 		curl \
 		php \
 		php-xml \
-		php-sqlite3 \
+		php-pgsql \
 		libapache2-mod-php
 
 # don't know why certs are broken, but this fixes it
