@@ -18,3 +18,9 @@ body {
     display: block;
   }
 }
+
+img.img-circle  {
+  object-fit: cover;
+  width: 48px;
+  height: 48px;
+}
