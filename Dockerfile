@@ -49,7 +49,8 @@ RUN apt-get update \
 		php \
 		php-xml \
 		php-pgsql \
-		libapache2-mod-php
+		libapache2-mod-php \
+		cron
 
 # don't know why certs are broken, but this fixes it
 RUN apt-get install -y --reinstall ca-certificates

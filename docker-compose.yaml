@@ -2,7 +2,6 @@ version: '3'
 
 services:
   app:
-    build: .
     image: local/xoomify:latest
     ports:
       - "8000:80"
@@ -19,6 +18,30 @@ services:
       - db
     restart: always
 
+  cron:
+    image: local/xoomify:latest
+    environment:
+      APP_SECRET: ${APP_SECRET}
+      APP_ENV: ${APP_ENV:-prod}
+      APP_DEBUG: ${APP_DEBUG:-0}
+      APP_VERSION: ${APP_VERSION:-0.0.1-rc1}
+      SPOTIFY_CLIENT_ID: ${SPOTIFY_CLIENT_ID}
+      SPOTIFY_CLIENT_SECRET: ${SPOTIFY_CLIENT_SECRET}
+      SPOTIFY_REDIRECT_URI: ${SPOTIFY_REDIRECT_URI}
+      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?serverVersion=15&charset=utf8"
+    depends_on:
+      - db
+    restart: always
+    privileged: true
+    command: >
+      bash -c "
+        echo cron \
+        && env >> /etc/environment \
+        && php /var/www/bin/console cache:clear && echo cleaned \
+        && echo '*/10 * * * * root php /var/www/bin/console spotify:users:get-latest-plays >> /var/log/cron.log 2>&1' >> /etc/crontab \
+        && cron -f
+      "
+ 
   db:
     image: postgres:15-alpine
     ports:
