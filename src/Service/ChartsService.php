@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Repository\ArtistRepository;
+use App\Repository\TrackRepository;
 use App\Service\Charts\ArtistsChart;
 use App\Service\Charts\ArtistsChartItem;
 use App\Service\Charts\TracksChart;
@@ -15,6 +16,7 @@ class ChartsService
     public function __construct(
         protected EntityManagerInterface $em,
         protected ArtistRepository $artistRepository,
+        protected TrackRepository $trackRepository,
     ) {
     }
 
@@ -26,32 +28,43 @@ class ChartsService
     ): TracksChart {
         $userFilter = '';
         if ($user) {
-            $userFilter = 'AND uph.user = :user';
+            $userFilter = 'AND uph.user_id = :user_id';
         }
-        $dql = '
-			SELECT uph as item, COUNT(uph.id) as num
-			FROM App\Entity\UserPlayHistory uph
-			JOIN uph.track as t
-			WHERE uph.playedAt >= :startDate
-			AND uph.playedAt <= :endDate
+        $sql = '
+			SELECT uph.track_id, COUNT(uph.track_id) as num
+			FROM user_play_history uph
+			WHERE uph.played_at >= :start_date
+			AND uph.played_at <= :end_date
 			'.$userFilter.'
-			GROUP BY uph.track
+			GROUP BY uph.track_id
 			ORDER BY num DESC
+			LIMIT '.$limit.'
 		';
 
-        $query = $this->em->createQuery($dql)
-                    ->setMaxResults($limit)
-                    ->setParameter('startDate', $startDate->format('Y-m-d H:i:s'))
-                    ->setParameter('endDate', $endDate->format('Y-m-d H:i:s'));
+        $stmt = $this->em->getConnection()->prepare($sql);
+        $params = [
+            'start_date' => $startDate->format('Y-m-d H:i:s'),
+            'end_date' => $endDate->format('Y-m-d H:i:s'),
+        ];
         if ($user) {
-            $query = $query->setParameter('user', $user);
+            $params['user_id'] = $user->getId();
         }
-        $res = $query->getResult();
+
+        $res = $stmt->executeQuery($params);
+        $data = $res->fetchAllAssociative();
+        $trackPlaysMap = [];
+        foreach ($data as $i) {
+            $trackPlaysMap[$i['track_id']] = $i['num'];
+        }
+        $trackIds = array_keys($trackPlaysMap);
+        $tracks = $this->trackRepository->findBy(['id' => $trackIds]);
 
         $items = [];
-        foreach ($res as $i) {
-            $items[] = new TracksChartItem($i['item']->getTrack(), $i['num']);
+        foreach ($tracks as $track) {
+            $items[] = new TracksChartItem($track, $trackPlaysMap[$track->getId()]);
         }
+
+        usort($items, fn (TracksChartItem $a, TracksChartItem $b) => $a->getNumPlays() < $b->getNumPlays());
 
         return new TracksChart($items);
     }
