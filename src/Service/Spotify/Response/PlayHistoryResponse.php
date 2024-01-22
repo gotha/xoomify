@@ -19,11 +19,11 @@ class PlayHistoryResponse
         $artists = [];
         foreach ($this->items as $item) {
             foreach ($item->track->artists as $artist) {
-                $artists[] = $artist;
+                $artists[$artist->id] = $artist;
             }
         }
 
-        return array_unique($artists, SORT_REGULAR);
+        return array_values($artists);
     }
 
     public function getNextAfter(): string|null
