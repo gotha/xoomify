@@ -39,6 +39,7 @@ services:
         && env >> /etc/environment \
         && php /var/www/bin/console cache:clear && echo cleaned \
         && echo '*/10 * * * * root php /var/www/bin/console spotify:users:get-latest-plays >> /var/log/cron.log 2>&1' >> /etc/crontab \
+        && echo '0 0 * * * root php /var/www/bin/console spotify:users:update >> /var/log/cron.log 2>&1' >> /etc/crontab \
         && cron -f
       "
  
