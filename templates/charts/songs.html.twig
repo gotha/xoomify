@@ -15,7 +15,9 @@
                          height="48">
                 {% endif %}
                 <div class="media-body" style="float: left">
-                    <strong title="Track name">{{ i.track.name }}</strong>
+		    <a href="/charts/track/{{ i.track.id }}/{{ period }}">
+                        <strong title="Track name">{{ i.track.name }}</strong>
+		    </a>
                     <p title="Artists">
                         {% for a in i.track.artists %}
                             {{ a.name }}

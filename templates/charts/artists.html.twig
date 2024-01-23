@@ -12,7 +12,9 @@
 		     src="{{ i.artist.smallestImage.url| default("#")}}"
                      width="48"
                      height="48">
-                    <strong title="{{ i.artist.name }}">{{ i.artist.name }}</strong>
+		    <a href="/charts/artist/{{i.artist.id}}/{{period}}">
+                        <strong title="{{ i.artist.name }}">{{ i.artist.name }}</strong>
+		    </a>
                 </div>
                 <div style="float: right;">
                     {{ i.numPlays }} plays

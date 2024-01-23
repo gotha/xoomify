@@ -5,10 +5,12 @@ namespace App\Service;
 use App\Entity\User;
 use App\Repository\ArtistRepository;
 use App\Repository\TrackRepository;
+use App\Repository\UserRepository;
 use App\Service\Charts\ArtistsChart;
 use App\Service\Charts\ArtistsChartItem;
 use App\Service\Charts\TracksChart;
 use App\Service\Charts\TracksChartItem;
+use Doctrine\DBAL\ParameterType;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ChartsService
@@ -17,6 +19,7 @@ class ChartsService
         protected EntityManagerInterface $em,
         protected ArtistRepository $artistRepository,
         protected TrackRepository $trackRepository,
+        protected UserRepository $userRepository,
     ) {
     }
 
@@ -116,5 +119,94 @@ class ChartsService
         usort($items, fn (ArtistsChartItem $a, ArtistsChartItem $b) => $a->getNumPlays() < $b->getNumPlays());
 
         return new ArtistsChart($items);
+    }
+
+    /**
+     * @return array<int, User>
+     */
+    public function getTrackListeners(
+        int $trackId,
+        \DateTime $startDate,
+        \DateTime $endDate,
+        int $limit = 20,
+    ): array {
+        $sql = '
+			SELECT uph.user_id, count(uph.id) as num
+			FROM user_play_history uph
+			WHERE track_id  = :trackId
+			AND played_at >= :startDate
+			AND played_at <= :endDate
+			GROUP BY user_id
+			ORDER BY num desc
+        ';
+
+        $stmt = $this->em->getConnection()->prepare($sql);
+        $stmt->bindValue('trackId', $trackId, ParameterType::INTEGER);
+        $stmt->bindValue('startDate', $startDate->format('Y-m-d H:i:s'));
+        $stmt->bindValue('endDate', $endDate->format('Y-m-d H:i:s'));
+        $res = $stmt->executeQuery();
+
+        $data = $res->fetchAllAssociative();
+        $userPlays = [];
+        foreach ($data as $i) {
+            $userPlays[$i['user_id']] = $i['num'];
+        }
+        $userIds = array_keys($userPlays);
+
+        $users = $this->userRepository->findBy(['id' => $userIds]);
+        $retval = [];
+        foreach ($users as $user) {
+            $plays = $userPlays[$user->getId()];
+            $retval[$plays] = $user;
+        }
+        krsort($retval);
+
+        return $retval;
+    }
+
+    /**
+     * @return array<int, User>
+     */
+    public function getArtistListeners(
+        int $artistId,
+        \DateTime $startDate,
+        \DateTime $endDate,
+        int $limit = 20,
+    ): array {
+        $sql = '
+			SELECT user_id, COUNT(*) as num
+			FROM user_play_history uph
+			JOIN track t
+				ON  t.id  = uph.track_id
+			JOIN track_artist ta
+				ON ta.track_id  = t.id
+			WHERE ta.artist_id = :artistId
+			AND uph.played_at >= :startDate
+			AND uph.played_at <= :endDate
+			GROUP BY uph.user_id
+			ORDER BY num DESC
+		';
+        $stmt = $this->em->getConnection()->prepare($sql);
+        $stmt->bindValue('artistId', $artistId, ParameterType::INTEGER);
+        $stmt->bindValue('startDate', $startDate->format('Y-m-d H:i:s'));
+        $stmt->bindValue('endDate', $endDate->format('Y-m-d H:i:s'));
+        $res = $stmt->executeQuery();
+
+        $data = $res->fetchAllAssociative();
+        $userPlays = [];
+        foreach ($data as $i) {
+            $userPlays[$i['user_id']] = $i['num'];
+        }
+        $userIds = array_keys($userPlays);
+
+        $users = $this->userRepository->findBy(['id' => $userIds]);
+        $retval = [];
+        foreach ($users as $user) {
+            $plays = $userPlays[$user->getId()];
+            $retval[$plays] = $user;
+        }
+        krsort($retval);
+
+        return $retval;
     }
 }

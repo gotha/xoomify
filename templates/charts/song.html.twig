@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% set title = 'Track Listeners for ' ~ track.name %}
+
+{% block content %}
+<div class="pane">
+    <ul class="list-group">
+        {% for num,u in chart %}
+            <li class="list-group-item">
+                <img class="img-circle media-object pull-left" src="#" width="64" height="64">
+
+                <div class="media-body" style="float: left">
+		    <a href="/charts/songs/{{period}}/{{ u.id }}">
+		        <strong>{{ u.name }}</strong>
+		    </a>
+                </div>
+                <div style="float: right;">
+		  {{ num }} plays
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
+
+{% block toolbar %}
+    <div style="text-align: center">
+        <div class="btn-group">
+	    <a href="/charts/track/{{track.id}}/day"
+               class="btn btn-default btn-large {% if period == "day" %}active{% endif %}">
+		today
+	    </a>
+            <a href="/charts/track/{{track.id}}/week"
+               class="btn btn-default btn-large {% if period == "week" %}active{% endif %}">
+                week
+            </a>
+            <a href="/charts/track/{{track.id}}/month"
+               class="btn btn-default btn-large {% if period == "month" %}active{% endif %}">
+		month
+	    </a>
+            <a href="/charts/track/{{track.id}}/year"
+               class="btn btn-default btn-large {% if period == "year" %}active{% endif %}">
+		year
+	    </a>
+        </div>
+    </div>
+{% endblock %}
