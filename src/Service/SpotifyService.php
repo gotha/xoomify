@@ -32,7 +32,7 @@ class SpotifyService
             $content = $resp->getContent();
         } catch (\Exception $e) {
             $this->logger->error('could not get artist', [
-                'debug' => $resp->getInfo()['debug'],
+               'debug' => $resp->getInfo(),
             ]);
             throw new \Exception($e);
         }
@@ -41,7 +41,7 @@ class SpotifyService
             $this->jsonMapper->mapObjectFromString($content, $resp);
         } catch (\Exception $e) {
             $this->logger->error('unexpected api response', [
-                'content' => $content,
+               'content' => $content,
             ]);
             throw new \Exception('unexpected api response; err:'.$e->getMessage());
         }
