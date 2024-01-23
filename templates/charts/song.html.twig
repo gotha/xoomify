@@ -7,7 +7,7 @@
     <ul class="list-group">
         {% for num,u in chart %}
             <li class="list-group-item">
-                <img class="img-circle media-object pull-left" src="#" width="64" height="64">
+		<img class="img-circle media-object pull-left" src="{{u.smallestImage.url|default("#")}}" width="64" height="64">
 
                 <div class="media-body" style="float: left">
 		    <a href="/charts/songs/{{period}}/{{ u.id }}">
