@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\UserImage;
 use App\Repository\UserRepository;
 use App\Service\SpotifyLoginService;
 use App\Service\SpotifyPersistedUserTokenService;
 use App\Service\SpotifyTokenService;
 use App\Service\SpotifyUserService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -32,9 +34,11 @@ class AuthController extends AbstractController
         SpotifyUserService $spotifyUserService,
         UserRepository $userRepository,
         Security $security,
+        EntityManagerInterface $em,
     ): Response {
         $userToken = $spotifyTokenService->getAccessTokenWithCode($code);
         $userProfile = $spotifyUserService->getCurrentUser($userToken->getAccessToken());
+
         $user = $userRepository->findOneBy(['spotifyUserId' => $userProfile->id]);
         if (!$user) {
             $user = UserRepository::createUser(
@@ -43,7 +47,22 @@ class AuthController extends AbstractController
                 $userProfile->email,
                 $userProfile->product,
             );
+        } else {
+            foreach ($user->getImage() as $i) {
+                $em->remove($i);
+            }
         }
+
+        foreach ($userProfile->images as $img) {
+            $i = new UserImage();
+            $i->setUrl($img->url);
+            $i->setWidth($img->width);
+            $i->setHeight($img->height);
+            $user->addImage($i);
+            $em->persist($i);
+        }
+        $em->persist($user);
+        $em->flush();
 
         $spotifyPersistedUserTokenService->setToken($user, $userToken);
 
