@@ -9,16 +9,9 @@ class UserProfile
     public string $email;
     public string $href;
     public string $id;
-    /** @var UserProfileImages[] */
+    /** @var Image[] */
     public array $images;
     public string $product;
     public string $type;
     public string $uri;
-}
-
-class UserProfileImages
-{
-    public string $url;
-    public int $height;
-    public int $width;
 }

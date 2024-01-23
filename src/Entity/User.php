@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -29,6 +31,14 @@ class User implements UserInterface
 
     #[ORM\OneToOne(targetEntity: UserToken::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?UserToken $token = null;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserImage::class, orphanRemoval: true)]
+    private Collection $image;
+
+    public function __construct()
+    {
+        $this->image = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -107,5 +117,54 @@ class User implements UserInterface
     public function getUserIdentifier(): string
     {
         return $this->email;
+    }
+
+    /**
+     * @return Collection<int, UserImage>
+     */
+    public function getImage(): Collection
+    {
+        return $this->image;
+    }
+
+    public function getSmallestImage(): UserImage|null
+    {
+        $images = $this->getImage()->getValues();
+        $min = array_shift($images);
+        foreach ($images as $img) {
+            if (null == $min) {
+                $min = $img;
+                continue;
+            }
+            $minRatio = $min->getWidth() * $min->getHeight();
+            $imgRatio = $img->getWidth() * $img->getHeight();
+            if ($imgRatio < $minRatio) {
+                $min = $img;
+            }
+        }
+
+        return $min;
+    }
+
+    public function addImage(UserImage $image): static
+    {
+        if (!$this->image->contains($image)) {
+            $this->image->add($image);
+            $image->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImage(UserImage $image): static
+    {
+        if ($this->image->removeElement($image)) {
+            // set the owning side to null (unless already changed)
+            if ($image->getUser() === $this) {
+                $image->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }
