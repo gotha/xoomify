@@ -110,4 +110,93 @@ class SpotifyServiceTest extends KernelTestCase
         $this->expectException(\Exception::class);
         $spotifyService->getArtist('artistSpotifyId');
     }
+
+    public function testGetUserProfile(): void
+    {
+        $mockResp = new MockResponse('
+			{
+			  "display_name": "Hristo",
+			  "external_urls": {
+				"spotify": "https://open.spotify.com/user/x"
+			  },
+			  "href": "https://api.spotify.com/v1/users/x",
+			  "id": "x",
+			  "images": [
+				{
+				  "url": "https://example.com/image.png",
+				  "height": 64,
+				  "width": 64
+				},
+				{
+				  "url": "https://example.com/image.png",
+				  "height": 300,
+				  "width": 300
+				}
+			  ],
+			  "type": "user",
+			  "uri": "spotify:user:x",
+			  "followers": {
+				"href": null,
+				"total": 256
+			  }
+			}
+		');
+        $httpClient = new MockHttpClient($mockResp);
+
+        $jsonMapper = (new JsonMapperFactory())->bestFit();
+
+        $spotifyTokenServices = $this->createMock(SpotifyTokenService::class);
+        $spotifyTokenServices->expects(self::once())
+            ->method('getClientToken')
+            ->willReturn('token');
+
+        $logger = $this->createMock(LoggerInterface::class);
+
+        $spotifyService = new SpotifyService($httpClient, $jsonMapper, $spotifyTokenServices, $logger);
+        $profile = $spotifyService->getUserProfile('userSpotifyId');
+
+        $this->assertEquals('x', $profile->id);
+        $this->assertEquals('Hristo', $profile->display_name);
+        $this->assertEquals(2, count($profile->images));
+    }
+
+    public function testGetUesrProfileExceptionWhenRequestFails(): void
+    {
+        $mockResp = new MockResponse('{"hello": "world"}', ['http_code' => 500]);
+        $httpClient = new MockHttpClient($mockResp);
+
+        $jsonMapper = (new JsonMapperFactory())->bestFit();
+
+        $spotifyTokenServices = $this->createMock(SpotifyTokenService::class);
+        $spotifyTokenServices->expects(self::once())
+            ->method('getClientToken')
+            ->willReturn('token');
+
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects(self::once())->method('error');
+
+        $spotifyService = new SpotifyService($httpClient, $jsonMapper, $spotifyTokenServices, $logger);
+        $this->expectException(\Exception::class);
+        $spotifyService->getUserProfile('userSpotifyId');
+    }
+
+    public function testGetUserProfileExceptionWhenMalformedData(): void
+    {
+        $mockResp = new MockResponse('<h1>Error 500</h1>');
+        $httpClient = new MockHttpClient($mockResp);
+
+        $jsonMapper = (new JsonMapperFactory())->bestFit();
+
+        $spotifyTokenServices = $this->createMock(SpotifyTokenService::class);
+        $spotifyTokenServices->expects(self::once())
+            ->method('getClientToken')
+            ->willReturn('token');
+
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects(self::once())->method('error');
+
+        $spotifyService = new SpotifyService($httpClient, $jsonMapper, $spotifyTokenServices, $logger);
+        $this->expectException(\Exception::class);
+        $spotifyService->getUserProfile('userSpotifyId');
+    }
 }

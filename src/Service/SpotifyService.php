@@ -63,7 +63,7 @@ class SpotifyService
             $content = $resp->getContent();
         } catch (\Exception $e) {
             $this->logger->error('could not get user', [
-                'debug' => $resp->getInfo()['debug'],
+                'debug' => $resp->getInfo(),
             ]);
             throw new \Exception($e);
         }
