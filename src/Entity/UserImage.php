@@ -78,4 +78,9 @@ class UserImage
 
         return $this;
     }
+
+    public function getLocalUrl(string $user_id): string
+    {
+        return "/images/{$user_id}_".$this->width.'-'.$this->height;
+    }
 }

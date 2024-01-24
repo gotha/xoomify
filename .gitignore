@@ -28,3 +28,4 @@ pgdata
 .phpunit.result.cache
 ###< phpunit/phpunit ###
 coverage
+public/images/*

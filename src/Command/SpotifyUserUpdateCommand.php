@@ -49,6 +49,17 @@ class SpotifyUserUpdateCommand extends Command
 
         $profile = $this->spotifyService->getUserProfile($user->getSpotifyUserId());
 
+        $imagesPath = realpath(__DIR__.'/../../public/images');
+
+        foreach ($profile->images as $img) {
+            $data = file_get_contents($img->url);
+
+            $filename = $user->getId().'_'.$img->width.'-'.$img->height;
+            $path = "$imagesPath/$filename";
+
+            file_put_contents($path, $data);
+        }
+
         foreach ($user->getImage() as $img) {
             $this->em->remove($img);
         }
