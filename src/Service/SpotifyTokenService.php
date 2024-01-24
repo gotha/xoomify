@@ -14,6 +14,7 @@ class SpotifyTokenService
         private HttpClientInterface $client,
         private string $redirect_uri,
         private LoggerInterface $logger,
+        private FilesystemAdapter $cache = new FilesystemAdapter(),
     ) {
     }
 
@@ -45,7 +46,7 @@ class SpotifyTokenService
             $content = $resp->getContent();
         } catch (\Exception $e) {
             $this->logger->error('could not get user access token with code', [
-                'debug' => $resp->getInfo()['debug'],
+                'debug' => $resp->getInfo(),
             ]);
             throw new \Exception($e);
         }
@@ -77,7 +78,7 @@ class SpotifyTokenService
             $content = $resp->getContent();
         } catch (\Exception $e) {
             $this->logger->error('could not get user access token with refresh token', [
-                'debug' => $resp->getInfo()['debug'],
+                'debug' => $resp->getInfo(),
             ]);
             throw new \Exception($e);
         }
@@ -100,8 +101,7 @@ class SpotifyTokenService
 
     public function getClientToken(): string
     {
-        $cache = new FilesystemAdapter();
-        $accessToken = $cache->get('spotify_client_access_token', function (ItemInterface $item) {
+        $accessToken = $this->cache->get('spotify_client_access_token', function (ItemInterface $item) {
             $resp = $this->client->request('POST', '/api/token/', [
                 'body' => http_build_query([
                     'grant_type' => 'client_credentials',
@@ -113,10 +113,11 @@ class SpotifyTokenService
                 $content = $resp->getContent();
             } catch (\Exception $e) {
                 $this->logger->error('could not get user access token with code', [
-                    'debug' => $resp->getInfo()['debug'],
+                    'debug' => $resp->getInfo(),
                 ]);
                 throw new \Exception($e);
             }
+
             $data = @json_decode($content);
             if (!isset($data->access_token)) {
                 $this->logger->error('could not fetch client token', [
