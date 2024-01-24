@@ -30,7 +30,7 @@ class SpotifyUserService
             $content = $resp->getContent();
         } catch (\Exception $e) {
             $this->logger->error('could not get user data', [
-                'debug' => $resp->getInfo()['debug'],
+                'debug' => $resp->getInfo(),
             ]);
             throw new \Exception($e);
         }
@@ -72,7 +72,7 @@ class SpotifyUserService
             $content = $resp->getContent();
         } catch (\Exception $e) {
             $this->logger->error('could not get user play history', [
-                'debug' => $resp->getInfo()['debug'],
+                'debug' => $resp->getInfo(),
             ]);
             throw new \Exception($e);
         }
