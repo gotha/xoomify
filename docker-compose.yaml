@@ -42,16 +42,15 @@ services:
         && echo '0 0 * * * root php /var/www/bin/console spotify:users:update >> /var/log/cron.log 2>&1' >> /etc/crontab \
         && cron -f
       "
- 
+
   db:
-    image: postgres:15-alpine
+    image: timescale/timescaledb-ha:pg16
+    restart: always
     ports:
-      - "5432:5432"
+      - 5432:5432
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - ./pgdata:/var/lib/postgresql/data:rw
-    restart: always
-
+      - ./pgdata:/var/lib/postgresql/data
