@@ -67,3 +67,9 @@ php bin/console doctrine:migrations:migrate
 npm run watch
 symfony server:start --no-tls
 ```
+
+### Run tests
+
+```sh
+composer test
+```

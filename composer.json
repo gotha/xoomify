@@ -68,7 +68,8 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
-        ]
+        ],
+        "test": "XDEBUG_MODE=coverage SYMFONY_DEPRECATIONS_HELPER=weak phpunit --coverage-html=coverage"
     },
     "conflict": {
         "symfony/symfony": "*"
