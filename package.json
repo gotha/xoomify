@@ -23,6 +23,7 @@
         "build": "encore production --progress"
     },
     "dependencies": {
+        "htmx.org": "^1.9.10",
         "photonkit": "^0.1.2"
     }
 }

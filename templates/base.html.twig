@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         {% block stylesheets %}{{ encore_entry_link_tags("app") }}{% endblock %}
+        {% block javascripts %}{{ encore_entry_script_tags('app') }}{% endblock %}
     </head>
     <body>
         <div class="window">
@@ -13,55 +14,67 @@
                 </h1>
 		<div class="toolbar-actions toolbar-menu">
 		<ul class="tab-group">
-		    <a href="/" class="tab-item {% if page == "home" %}active{% endif %}">
+		    <a hx-get="/charts/songs/week" hx-target="#main-pane" class="tab-item">
 			<span class="icon icon-home"></span>
 			Home
 		    </a>
-		    <a href="/charts/songs/week/me" class="tab-item {% if page == "me" %}active{% endif %}">
+		    <a hx-get="/charts/songs/week/me" hx-target="#main-pane" class="tab-item">
 			<span class="icon icon-note-beamed"></span>
 			My Top 20
 		    </a>
-		    <a href="/history" class="tab-item {% if page == "history" %}active{% endif %}">
+		    <a hx-get="/history" hx-target="#main-pane" class="tab-item">
 			<span class="icon icon-hourglass"></span>
 			History
 		    </a>
-		    <a href="/users" class="tab-item {% if page == "users" %}active{% endif %}">
+		    <a hx-get="/users" hx-target="#main-pane" class="tab-item">
 			<span class="icon icon-users"></span>
 			Users
 		    </a>
 		</ul>
 		</div>
-		{% if block('toolbar') %}
                 <div class="toolbar-actions">
-                    {% block toolbar %}{% endblock %}
+                    <div style="text-align: center" id="periodRangeButtons">
+                        <div class="btn-group">
+                            <a class="btn btn-default btn-large" id="todayRangeButton">
+                		today
+                	    </a>
+                            <a class="btn btn-default btn-large" id="weekRangeButton">
+                                week
+                            </a>
+                            <a class="btn btn-default btn-large" id="monthRangeButton">
+                		month
+                	    </a>
+                            <a class="btn btn-default btn-large" id="yearRangeButton">
+                		year
+                	    </a>
+                        </div>
+                    </div>
                 </div>
-	        {% endif %}
             </header>
             <div class="window-content">
                 <div class="pane-group">
                     <div class="pane pane-sm sidebar">
 			<h5 class="nav-group-title">Favourites</h5>
                         <nav class="nav-group">
-                            <a href="/" class="sidebarLink nav-group-item {% if page == "home" %}active{% endif %}">
+                            <a hx-get="/charts/songs/week" hx-target="#main-pane" class="sidebarLink nav-group-item">
                                 <span class="icon icon-home"></span>
                                 Home
                             </a>
-                            <a href="/charts/songs/week/me" class="sidebarLink nav-group-item {% if page == "me" %}active{% endif %}">
+                            <a hx-get="/charts/songs/week/me" hx-target="#main-pane" class="sidebarLink nav-group-item">
                                 <span class="icon icon-note-beamed"></span>
                                 My Top 20
                             </a>
-                            <a href="/history" class="sidebarLink nav-group-item {% if page == "history" %}active{% endif %}">
+                            <a hx-get="/history" hx-target="#main-pane" class="sidebarLink nav-group-item">
                                 <span class="icon icon-hourglass"></span>
                                 History
                             </a>
-                            <a href="/users" class="sidebarLink nav-group-item {% if page == "users" %}active{% endif %}">
+                            <a hx-get="/users" hx-target="#main-pane" class="sidebarLink nav-group-item">
                                 <span class="icon icon-users"></span>
                                 Users
                             </a>
                         </nav>
                     </div>
-                    <div class="pane">
-                        {% block content %}{% endblock %}
+                    <div class="pane" hx-get="/charts/songs/week" hx-trigger="load" id="main-pane">
                     </div>
                 </div>
             </div>

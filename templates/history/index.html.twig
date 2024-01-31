@@ -1,5 +1,4 @@
-{% extends 'base.html.twig' %}
-{% block content %}
+<div data-page="history">
     <ul class="list-group">
         {% for i in history %}
             <li class="list-group-item">
@@ -20,11 +19,12 @@
                     </p>
                 </div>
                 <div style="float: right;">
-                    {{ i.playedAt|date("H:i") }} h. <a href="https://open.spotify.com/track/{{ i.track.spotifyId }}"
-    target="_blank"
-    style="color: black"> <span class="icon icon-play"></span> </a>
+                    {{ i.playedAt|date("H:i") }} h.
+		    <a href="https://open.spotify.com/track/{{ i.track.spotifyId }}" target="_blank" style="color: black">
+			<span class="icon icon-play"></span>
+		    </a>
                 </div>
             </li>
         {% endfor %}
     </ul>
-{% endblock %}
+</div>
