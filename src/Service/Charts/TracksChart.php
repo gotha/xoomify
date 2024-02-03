@@ -2,7 +2,7 @@
 
 namespace App\Service\Charts;
 
-class TracksChart
+class TracksChart implements \JsonSerializable
 {
     /**
      * @param TracksChartItem[] $items
@@ -18,5 +18,10 @@ class TracksChart
     public function getItems(): array
     {
         return $this->items;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return ['items' => $this->getItems()];
     }
 }

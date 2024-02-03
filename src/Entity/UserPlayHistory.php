@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserPlayHistoryRepository::class)]
 #[ORM\UniqueConstraint(name: 'uniq', columns: ['track_id', 'user_id', 'played_at'])]
-class UserPlayHistory
+class UserPlayHistory implements \JsonSerializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -65,5 +65,18 @@ class UserPlayHistory
         $this->user = $user;
 
         return $this;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'user_id' => $this->getUser()->getId(),
+            'track' => [
+                'id' => $this->getTrack()->getId(),
+                'name' => $this->getTrack()->getName(),
+            ],
+            'played_at' => $this->getPlayedAt()->format('Y-m-d H:i:sp'),
+            'played_at_ts' => $this->getPlayedAt()->getTimestamp(),
+        ];
     }
 }

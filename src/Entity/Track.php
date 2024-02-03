@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TrackRepository::class)]
-class Track
+class Track implements \JsonSerializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -95,5 +95,16 @@ class Track
         $this->artists->removeElement($artist);
 
         return $this;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'spotifyId' => $this->getSpotifyId(),
+            'name' => $this->getName(),
+            'durationMs' => $this->getDurationMs(),
+            'artists' => $this->getArtists()->getValues(),
+        ];
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Service\Charts;
 
-class ArtistsChart
+class ArtistsChart implements \JsonSerializable
 {
     /**
      * @param ArtistsChartItem[] $items
@@ -18,5 +18,10 @@ class ArtistsChart
     public function getItems(): array
     {
         return $this->items;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return ['items' => $this->getItems()];
     }
 }

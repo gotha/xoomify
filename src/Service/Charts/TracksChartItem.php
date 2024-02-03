@@ -4,7 +4,7 @@ namespace App\Service\Charts;
 
 use App\Entity\Track;
 
-class TracksChartItem
+class TracksChartItem implements \JsonSerializable
 {
     public function __construct(
         protected Track $track,
@@ -20,5 +20,13 @@ class TracksChartItem
     public function getNumPlays(): int
     {
         return $this->num_plays;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'num_plays' => $this->getNumPlays(),
+            'track' => $this->getTrack(),
+        ];
     }
 }

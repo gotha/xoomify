@@ -6,7 +6,7 @@ use App\Repository\ArtistImageRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ArtistImageRepository::class)]
-class ArtistImage
+class ArtistImage implements \JsonSerializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -77,5 +77,14 @@ class ArtistImage
         $this->artist = $artist;
 
         return $this;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'height' => $this->getHeight(),
+            'width' => $this->getWidth(),
+            'url' => $this->getUrl(),
+        ];
     }
 }

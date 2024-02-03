@@ -3,9 +3,8 @@
 namespace App\Service\Charts;
 
 use App\Entity\Artist;
-use App\Entity\User;
 
-class ArtistsChartItem
+class ArtistsChartItem implements \JsonSerializable
 {
     public function __construct(
         protected Artist $artist,
@@ -18,16 +17,16 @@ class ArtistsChartItem
         return $this->artist;
     }
 
-    /**
-     * @return User[]
-     */
-    public function getListeners(): array
-    {
-        return $this->listeners;
-    }
-
     public function getNumPlays(): int
     {
         return $this->num_plays;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'artist' => $this->getArtist(),
+            'num_plays' => $this->getNumPlays(),
+        ];
     }
 }
